@@ -63,6 +63,7 @@ def spatial_jitter_numpy(
 
     if clip_outliers:
         events = np.delete(events, (np.where((xs < 0) | (xs > sensor_size[0]))), axis=0)
+        ys = np.delete(ys, (np.where((xs < 0) | (xs > sensor_size[0]))), axis=0)
         events = np.delete(events, (np.where((ys < 0) | (ys > sensor_size[1]))), axis=0)
     else:
         xs[xs < 0] = 0
