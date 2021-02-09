@@ -16,6 +16,7 @@ from .to_ratecoded_frame import to_ratecoded_frame_numpy
 from .to_sparse_tensor import to_sparse_tensor_pytorch
 from .to_timesurface import to_timesurface_numpy
 from .uniform_noise import uniform_noise_numpy
+from .aer_to_vect import aer_to_vect
 from .utils import guess_event_ordering_numpy, is_multi_image
 
 __all__ = [
@@ -37,4 +38,5 @@ __all__ = [
     "to_sparse_tensor_pytorch",
     "to_timesurface_numpy",
     "uniform_noise_numpy",
+    "aer_to_vect",
 ]

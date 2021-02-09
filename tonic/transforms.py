@@ -344,3 +344,19 @@ class ToAveragedTimesurface(object):
             self.merge_polarities,
         )
         return surfaces, images
+    
+
+class AERtoVector:
+    """Transforms one or more targets into ((N_xgrid * N_ygrid * N_polarities) * N_events) matrices where all events are mapped as a function of their address (column) and indice (line). An exponential decay is applied on their timing. """
+
+    def __init__(self, tau=150000, sample_event=1, sample_space=1, cumulate=False):
+        self.tau = tau
+        self.cumulate = cumulate
+        self.sample_event = sample_event
+        self.sample_space = sample_space
+
+    def __call__(self, events, sensor_size, ordering, images=None, multi_image=None):
+        events = functional.aer_to_vect(
+            events, self.cumulate, self.tau, self.sample_event, self.sample_space, sensor_size, ordering, 
+        )
+        return events
