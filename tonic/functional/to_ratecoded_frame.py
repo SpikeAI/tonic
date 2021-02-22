@@ -3,12 +3,12 @@ import math
 
 
 def to_ratecoded_frame_numpy(
-    events, sensor_size, ordering, frame_time=5000, merge_polarities=True
+    events, sensor_size, ordering, frame_time=5000, merge_polarities=True, vmax=255
 ):
     """Representation that creates frames by encoding the rate of events.
 
     Args:
-        frame_time: time bin for each frame
+        frame_time: time bin for each frame (in microseconds)
         merge_polarities: flag to add all polarities together
 
     Returns:
@@ -29,6 +29,7 @@ def to_ratecoded_frame_numpy(
     else:
         pols[pols == -1] = 0
 
+    # slices the time axis in chunks of length frame_time 
     n_bins = math.ceil(events[-1, t_index] / frame_time)
 
     n = 0
@@ -43,6 +44,6 @@ def to_ratecoded_frame_numpy(
             n += 1
         frames[n, y, x] += p
 
-    frames = np.tanh(frames / 3) * 255
+    frames = np.tanh(frames / 3) * vmax
 
     return frames

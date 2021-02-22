@@ -225,7 +225,7 @@ class ToRatecodedFrame:
     """Bin events to frames."""
 
     def __init__(self, frame_time=5000, merge_polarities=True):
-        self.frame_time = frame_time
+        self.frame_time = frame_time  # microseconds
         self.merge_polarities = merge_polarities
 
     def __call__(self, events, sensor_size, ordering, images=None, multi_image=None):

@@ -19,12 +19,15 @@ def pad_events(batch):
 
 
 # needs matplotlib widget backend
-def plot_events(events, sensor_size, ordering, frame_time=25000, repeat=False):
+def plot_events(events, sensor_size, ordering, time_filter=20000, frame_time=25000, repeat=False):
+    """
+    Timings are in microseconds
+    """
     from .utils import plot_frames
 
     transform = transforms.Compose(
         [
-            transforms.Denoise(time_filter=20000),
+            transforms.Denoise(time_filter=time_filter),
             transforms.ToRatecodedFrame(frame_time=frame_time, merge_polarities=True),
         ]
     )
