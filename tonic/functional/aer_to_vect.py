@@ -37,8 +37,8 @@ def aer_to_vect(
     c_int = lambda n, d : ((n - 1) // d) + 1
 
     # presynaptic potential
-    Vm = np.zeros((c_int(sensor_size[0],sample_space),
-                     c_int(sensor_size[1],sample_space),
+    Vm = np.zeros((c_int(sensor_size[0], sample_space),
+                     c_int(sensor_size[1], sample_space),
                      N_p))
 
     # what is recorded
@@ -48,8 +48,8 @@ def aer_to_vect(
                     ))
     else:
         X = np.zeros((c_int(n_events, sample_events),
-                      c_int(sensor_size[0],sample_space),
-                      c_int(sensor_size[1],sample_space),
+                      c_int(sensor_size[0], sample_space),
+                      c_int(sensor_size[1], sample_space),
                       N_p
                     ))
 
@@ -62,7 +62,7 @@ def aer_to_vect(
         y_pos = events[i_event,y_index]//sample_space
         p = events[i_event,p_index]
 
-        Vm[i_event, x_pos, y_pos, p] = 1.
+        Vm[x_pos, y_pos, p] = 1.
 
         if i_event % sample_events == sample_events//2:
             if use_ravel:
