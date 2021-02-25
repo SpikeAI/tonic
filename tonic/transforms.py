@@ -225,7 +225,7 @@ class ToRatecodedFrame:
     """Bin events to frames."""
 
     def __init__(self, frame_time=5000, merge_polarities=True):
-        self.frame_time = frame_time  # microseconds
+        self.frame_time = frame_time
         self.merge_polarities = merge_polarities
 
     def __call__(self, events, sensor_size, ordering, images=None, multi_image=None):
@@ -344,19 +344,20 @@ class ToAveragedTimesurface(object):
             self.merge_polarities,
         )
         return surfaces, images
-
+    
 
 class AERtoVector:
     """Transforms one or more targets into ((N_xgrid * N_ygrid * N_polarities) * N_events) matrices where all events are mapped as a function of their address (column) and indice (line). An exponential decay is applied on their timing. """
 
-    def __init__(self, tau=150000, sample_event=1, sample_space=1, cumulate=False):
+    def __init__(self, nb_pola = 2, tau=150000, sample_event=1, sample_space=1, cumulate=False):
         self.tau = tau
         self.cumulate = cumulate
         self.sample_event = sample_event
         self.sample_space = sample_space
+        self.nb_pola = nb_pola
 
     def __call__(self, events, sensor_size, ordering, images=None, multi_image=None):
         events = functional.aer_to_vect(
-            events, self.cumulate, self.tau, self.sample_event, self.sample_space, sensor_size, ordering,
+            events, self.cumulate, self.tau, self.sample_event, self.sample_space, sensor_size, self.nb_pola, ordering, 
         )
         return events

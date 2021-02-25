@@ -10,6 +10,7 @@ def aer_to_vect(
     sample_events,
     sample_space,
     sensor_size,
+    nb_pola,
     ordering=None,
     use_ravel=True
 ):
@@ -31,7 +32,7 @@ def aer_to_vect(
     t_index = ordering.find("t")
     p_index = ordering.find("p")
 
-    N_p = len(np.unique(events[:, p_index]))
+    N_p = nb_pola
     n_events = len(events[:, t_index])
 
     c_int = lambda n, d : ((n - 1) // d) + 1

@@ -100,9 +100,7 @@ class NMNIST(VisionDataset):
             events = self.transform(events, self.sensor_size, self.ordering)
         if self.target_transform is not None:
             target = self.target_transform(target)
-        #elt_id = self.samples[index][-9:-4]
-        #print(elt_id)
-        return events, target#, elt_id
+        return events, target
 
     def __len__(self):
         return len(self.samples)
