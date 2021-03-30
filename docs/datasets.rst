@@ -21,6 +21,10 @@ All the datasets have almost similar API. They all have two common arguments:
 
 .. currentmodule:: tonic.datasets
 
+ASL-DVS
+~~~~~~~
+.. autoclass:: ASLDVS
+
 DVS gestures
 ~~~~~~~~~~~~
 .. autoclass:: DVSGesture
@@ -37,6 +41,10 @@ NMNIST
 ~~~~~~
 .. autoclass:: NMNIST
 
+NavGesture
+~~~~~~~~~~
+.. autoclass:: NavGesture
+
 POKER DVS
 ~~~~~~~~~
 .. autoclass:: POKERDVS
@@ -46,6 +54,5 @@ Dataset suggestions
 We would like to include support for some other datasets as well. Some possible candidates are:
 
 * `MVSEC <https://daniilidis-group.github.io/mvsec/>`_
-* `ASL-DVS <https://github.com/PIX2NVS/NVS2Graph>`_
 * `TI Digits <https://catalog.ldc.upenn.edu/LDC93S10>`_
 * `TIMIT <https://catalog.ldc.upenn.edu/LDC93S1>`_

@@ -3,8 +3,10 @@ from . import functional
 
 class Compose:
     """Composes several transforms together.
+
     Args:
-        transforms (list of ``Transform`` objects): list of transforms to compose.
+        transforms (list of ``Transform`` objects): list of transform(s) to compose. Even when using a single transform, the Compose wrapper is necessary.
+
     Example:
         >>> transforms.Compose([
         >>>     transforms.Denoise(),
@@ -115,6 +117,20 @@ class Denoise:
         return events, images
 
 
+class MaskHotPixel:
+    """Drops events for certain pixel locations, to suppress pixels that constantly fire
+    (e.g. due to faulty hardware)."""
+
+    def __init__(self, coordinates):
+        self.coordinates = coordinates
+
+    def __call__(self, events, sensor_size, ordering, images=None, multi_image=None):
+        events = functional.mask_hot_pixel(
+            events, self.coordinates, sensor_size, ordering
+        )
+        return events, images
+
+
 class RefractoryPeriod:
     """Cycles through all events and drops event if within refractory period for
     that pixel."""
@@ -221,6 +237,54 @@ class TimeSkew:
         return events, images
 
 
+class UniformNoise:
+    """Inject noise events."""
+
+    def __init__(self, noise_density=1e-8):
+        self.noise_density = noise_density
+
+    def __call__(self, events, sensor_size, ordering, images=None, multi_image=None):
+        surfaces = functional.uniform_noise_numpy(
+            events, sensor_size, ordering, self.noise_density
+        )
+        return events, images
+
+
+class ToAveragedTimesurface:
+    """Creates Averaged Time Surfaces."""
+
+    def __init__(
+        self,
+        cell_size=10,
+        surface_size=7,
+        temporal_window=5e5,
+        tau=5e3,
+        decay="lin",
+        merge_polarities=False,
+    ):
+        assert surface_size % 2 == 1
+        self.cell_size = cell_size
+        self.surface_size = surface_size
+        self.temporal_window = temporal_window
+        self.tau = tau
+        self.decay = decay
+        self.merge_polarities = merge_polarities
+
+    def __call__(self, events, sensor_size, ordering, images=None, multi_image=None):
+        surfaces = functional.to_averaged_timesurface(
+            events,
+            sensor_size,
+            ordering,
+            self.cell_size,
+            self.surface_size,
+            self.temporal_window,
+            self.tau,
+            self.decay,
+            self.merge_polarities,
+        )
+        return surfaces, images
+
+
 class ToRatecodedFrame:
     """Bin events to frames."""
 
@@ -278,19 +342,6 @@ class ToTimesurface:
         return surfaces, images
 
 
-class UniformNoise:
-    """Inject noise events."""
-
-    def __init__(self, noise_density=1e-8):
-        self.noise_density = noise_density
-
-    def __call__(self, events, sensor_size, ordering, images=None, multi_image=None):
-        surfaces = functional.uniform_noise_numpy(
-            events, sensor_size, ordering, self.noise_density
-        )
-        return events, images
-
-
 class Repeat:
     """Copies target n times. Useful to transform sample labels into sequences."""
 
@@ -311,40 +362,17 @@ class ToOneHotEncoding:
         return np.eye(self.n_classes)[target]
 
 
-class ToAveragedTimesurface(object):
-    """Creates Averaged Time Surfaces."""
-
-    def __init__(
-        self,
-        cell_size=10,
-        surface_size=7,
-        temporal_window=5e5,
-        tau=5e3,
-        decay="lin",
-        merge_polarities=False,
-    ):
-        assert surface_size % 2 == 1
-        self.cell_size = cell_size
-        self.surface_size = surface_size
-        self.temporal_window = temporal_window
-        self.tau = tau
-        self.decay = decay
-        self.merge_polarities = merge_polarities
+class NumpyAsType(object):
+    def __init__(self, cast_to):
+        self.cast_to = cast_to
 
     def __call__(self, events, sensor_size, ordering, images=None, multi_image=None):
-        surfaces = functional.to_averaged_timesurface(
-            events,
-            sensor_size,
-            ordering,
-            self.cell_size,
-            self.surface_size,
-            self.temporal_window,
-            self.tau,
-            self.decay,
-            self.merge_polarities,
-        )
-        return surfaces, images
-    
+        events = events.astype(self.cast_to)
+
+        if images is not None:
+            images = images.astype(self.cast_to)
+
+        return events, images
 
 class AERtoVector:
     """Transforms one or more targets into ((N_xgrid * N_ygrid * N_polarities) * N_events) matrices where all events are mapped as a function of their address (column) and indice (line). An exponential decay is applied on their timing. """
