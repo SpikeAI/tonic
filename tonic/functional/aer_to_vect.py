@@ -22,11 +22,11 @@ def aer_to_vect(
     Returns:
         -
     """
-
+    
     if ordering is None:
         ordering = guess_event_ordering_numpy(events)
     assert "x" and "y" in ordering
-
+    
     x_index = ordering.find("x")
     y_index = ordering.find("y")
     t_index = ordering.find("t")
@@ -59,9 +59,9 @@ def aer_to_vect(
             dt = events[i_event, t_index]-events[i_event-1, t_index]
             Vm *= np.exp(-dt/tau)
 
-        x_pos = events[i_event,x_index]//sample_space
-        y_pos = events[i_event,y_index]//sample_space
-        p = events[i_event,p_index]
+        x_pos = int(events[i_event,x_index]//sample_space)
+        y_pos = int(events[i_event,y_index]//sample_space)
+        p = int(events[i_event,p_index])
 
         Vm[x_pos, y_pos, p] = 1.
 
