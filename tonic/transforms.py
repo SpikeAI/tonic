@@ -395,4 +395,4 @@ class AERtoVector:
         events = functional.aer_to_vect(
             events, self.cumulate, self.tau, self.sample_event, self.sample_space, sensor_size, self.nb_pola, ordering, 
         )
-        return events
+        return events, images
